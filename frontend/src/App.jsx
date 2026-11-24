@@ -126,14 +126,12 @@ export default function App() {
 
           <div className="topbar-actions">
             {simulate && (
-              <button
-                type="button"
-                className="sim-pill clickable"
-                onClick={() => { setSidebarCollapsed(false); setDrawer(true); }}
-                title="Resilience Lab active — click to configure simulation"
+              <div
+                className="sim-pill"
+                title="Active simulation header injected for failure testing"
               >
                 <IconBolt size={12} className="sim-pill-icon" /> Simulating {simulate}
-              </button>
+              </div>
             )}
             {systemHealthy !== null && (
               <div className={`health-indicator ${systemHealthy ? "healthy" : "degraded"}`} title="Backend & database status">
