@@ -163,6 +163,102 @@ small, .muted { color: var(--muted); font-size: 12px; }
   border-color: var(--border);
 }
 
+.badge-count {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 1px 6px;
+}
+
+.past-sessions-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.past-session-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.past-session-item:hover {
+  background: var(--panel-3);
+  border-color: var(--border-hover);
+  transform: translateX(1px);
+}
+.past-session-item.active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.past-session-main {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  flex: 1;
+}
+.past-session-icon {
+  color: var(--muted);
+  display: inline-flex;
+  flex: none;
+}
+.past-session-item.active .past-session-icon {
+  color: var(--accent-hover);
+}
+.past-session-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+.past-session-title {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+.past-session-id code {
+  font-size: 9.5px;
+  color: var(--muted);
+}
+
+.past-session-delete {
+  opacity: 0;
+  color: var(--muted);
+  padding: 3px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  flex: none;
+}
+.past-session-item:hover .past-session-delete {
+  opacity: 1;
+}
+.past-session-delete:hover {
+  color: var(--bad);
+  background: var(--bad-soft);
+}
+
 .kv {
   display: grid;
   grid-template-columns: auto 1fr;

@@ -1,6 +1,6 @@
 import HealthPanel from "./HealthPanel";
 import HistoryInspector from "./HistoryInspector";
-import { IconClose, IconCollapse, IconExpand } from "./Icons";
+import { IconChat, IconClose, IconCollapse, IconExpand, IconTrash } from "./Icons";
 import ResilienceLab from "./ResilienceLab";
 import SessionInsights from "./SessionInsights";
 
@@ -12,6 +12,7 @@ export default function Sidebar({
   labMode, onLabMode, refreshKey, onNewChat,
   messages, engineeringMode, onEngineeringMode, latestFailoverEvent,
   collapsed, onToggleCollapse,
+  pastSessions = [], onSelectSession, onDeleteSession,
 }) {
   return (
     <>
@@ -49,7 +50,7 @@ export default function Sidebar({
         {/* Session Section */}
         <section className="sidebar-section">
           <div className="section-head">
-            <h3>Session</h3>
+            <h3>Active Session</h3>
             <button
               type="button"
               className="subtle-reset-btn"
@@ -57,7 +58,7 @@ export default function Sidebar({
               title="Reset to fresh session"
               aria-label="Start new session"
             >
-              Reset
+              + New
             </button>
           </div>
           <dl className="kv">
@@ -66,6 +67,55 @@ export default function Sidebar({
             <dt>Messages</dt>
             <dd>{messageCount}</dd>
           </dl>
+        </section>
+
+        {/* Recent Conversations */}
+        <section className="sidebar-section">
+          <div className="section-head">
+            <h3>Recent Chats</h3>
+            <span className="badge-count">{pastSessions.length}</span>
+          </div>
+          {pastSessions.length > 0 ? (
+            <ul className="past-sessions-list" aria-label="Recent chats">
+              {pastSessions.slice(0, 8).map((s) => {
+                const isActive = s.id === sessionId;
+                return (
+                  <li
+                    key={s.id}
+                    className={`past-session-item ${isActive ? "active" : ""}`}
+                    onClick={() => {
+                      onSelectSession?.(s.id);
+                      onClose?.();
+                    }}
+                    title={`Load chat: ${s.title || s.id}`}
+                  >
+                    <div className="past-session-main">
+                      <span className="past-session-icon">
+                        <IconChat size={13} />
+                      </span>
+                      <div className="past-session-text">
+                        <strong className="past-session-title">{s.title || "Chat"}</strong>
+                        <small className="past-session-id"><code>{s.id.slice(0, 12)}…</code></small>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      className="past-session-delete"
+                      onClick={(e) => onDeleteSession?.(s.id, e)}
+                      title="Remove from history"
+                      aria-label="Remove session from list"
+                    >
+                      <IconTrash size={12} />
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <p className="muted empty-note" style={{ margin: 0, fontSize: 11.5 }}>
+              No previous chats saved yet. New conversations are automatically indexed here.
+            </p>
+          )}
         </section>
 
         {/* System Health */}

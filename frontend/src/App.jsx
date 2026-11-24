@@ -16,7 +16,18 @@ export default function App() {
 
   const health = useHealth();
   const simulate = LAB_MODES.find((m) => m.id === labMode)?.header || null;
-  const { sessionId, messages, loading, send, retry, storedCount, newChat } = useChat({
+  const {
+    sessionId,
+    messages,
+    loading,
+    send,
+    retry,
+    storedCount,
+    newChat,
+    pastSessions,
+    loadSession,
+    deletePastSession,
+  } = useChat({
     systemPrompt,
     simulate,
   });
@@ -81,6 +92,9 @@ export default function App() {
         latestFailoverEvent={latestFailoverEvent}
         collapsed={sidebarCollapsed}
         onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
+        pastSessions={pastSessions}
+        onSelectSession={loadSession}
+        onDeleteSession={deletePastSession}
       />
       <main className="main">
         <header className="topbar">

@@ -110,3 +110,19 @@ export function IconDownload({ size = 13, className = "" }) {
     </svg>
   );
 }
+
+export function IconTrash({ size = 12, className = "" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M2.5 4.5h11M5.5 4.5V3a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v1.5M13 4.5l-.8 9a1 1 0 0 1-1 .9H4.8a1 1 0 0 1-1-.9L3 4.5M6.5 7.5v4M9.5 7.5v4" />
+    </svg>
+  );
+}
+
+export function IconChat({ size = 13, className = "" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M13.5 10.5a2 2 0 0 1-2 2H5l-3 2.5V4a2 2 0 0 1 2-2h7.5a2 2 0 0 1 2 2v6.5z" />
+    </svg>
+  );
+}
