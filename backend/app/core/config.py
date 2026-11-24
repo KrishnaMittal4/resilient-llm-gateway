@@ -41,7 +41,7 @@ def load_settings(env=None) -> Settings:
 
     entries = []
     if gemini_key:
-        model = env.get("GEMINI_MODEL", "").strip() or "gemini/gemini-3.1-flash-lite"
+        model = env.get("GEMINI_MODEL", "").strip() or "gemini/gemini-3.5-flash-lite"
         entries.append(KeyEntry("key_1", "gemini", _prefixed(model, "gemini"), gemini_key))
     if groq_key:
         model = env.get("GROQ_MODEL", "").strip() or "groq/llama-3.3-70b-versatile"
