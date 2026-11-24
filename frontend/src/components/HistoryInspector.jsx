@@ -4,7 +4,13 @@ import { getHistory } from "../services/api";
 export default function HistoryInspector({ sessionId, refreshKey }) {
   const [state, setState] = useState({ loading: false, messages: null, error: null });
 
-  const load = useCallback(async () => {
+  const load = useCallback(async (forced = false) => {
+    // A fresh session starts empty in browser memory before any turn is completed.
+    // Avoid triggering an unnecessary 404 in console/backend logs unless forced by refresh.
+    if (!forced && refreshKey === 0) {
+      setState({ loading: false, messages: [], error: null });
+      return;
+    }
     setState((s) => ({ ...s, loading: true, error: null }));
     try {
       const data = await getHistory(sessionId);
@@ -13,7 +19,7 @@ export default function HistoryInspector({ sessionId, refreshKey }) {
       if (err.status === 404) setState({ loading: false, messages: [], error: null });
       else setState({ loading: false, messages: null, error: "Couldn't load history." });
     }
-  }, [sessionId]);
+  }, [sessionId, refreshKey]);
 
   useEffect(() => {
     load();
@@ -23,13 +29,13 @@ export default function HistoryInspector({ sessionId, refreshKey }) {
     <div className="history">
       <div className="history-head">
         <span className="history-badge">SQLite Session Store</span>
-        <button type="button" className="link-btn" onClick={load} disabled={state.loading}>
+        <button type="button" className="link-btn" onClick={() => load(true)} disabled={state.loading}>
           {state.loading ? "Loading…" : "Refresh"}
         </button>
       </div>
       <div className="history-session-meta">
         <code>{sessionId}</code>
-        <span className="msg-count-tag">{state.messages ? `${state.messages.length} stored` : "Loading..."}</span>
+        <span className="msg-count-tag">{state.messages !== null ? `${state.messages.length} stored` : "Loading..."}</span>
       </div>
       {state.error && <p className="muted error-text">{state.error}</p>}
       {state.messages && state.messages.length === 0 && (
