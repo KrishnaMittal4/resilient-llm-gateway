@@ -27,7 +27,7 @@ export default function App() {
     .slice(-1)[0]?.metadata || null;
 
   // Health status indicator
-  const systemHealthy = health?.keys?.some((k) => k.healthy) ?? null;
+  const systemHealthy = health?.loading ? null : (health?.ok ?? false);
 
   const exportTrace = useCallback(() => {
     if (messages.length === 0) return;
