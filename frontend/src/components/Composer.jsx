@@ -16,7 +16,7 @@ export default function Composer({ onSend, loading }) {
       <textarea
         data-testid="chat-input"
         aria-label="Message"
-        placeholder="Message Lyftr Resilient AI…"
+        placeholder="Ask anything... (Enter to send, Shift+Enter for newline)"
         rows={1}
         maxLength={4000}
         value={value}

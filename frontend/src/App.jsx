@@ -10,9 +10,22 @@ export default function App() {
   const [systemPrompt, setSystemPrompt] = useState(DEFAULT_PROMPT);
   const [labMode, setLabMode] = useState("normal");
   const [drawer, setDrawer] = useState(false);
+  const [engineeringMode, setEngineeringMode] = useState(true);
+
   const health = useHealth();
   const simulate = LAB_MODES.find((m) => m.id === labMode)?.header || null;
-  const { sessionId, messages, loading, send, retry, storedCount, newChat } = useChat({ systemPrompt, simulate });
+  const { sessionId, messages, loading, send, retry, storedCount, newChat } = useChat({
+    systemPrompt,
+    simulate,
+  });
+
+  // Derive latest failover event from messages
+  const latestFailoverEvent = messages
+    .filter((m) => m.role === "assistant" && m.metadata?.fallback_attempts > 0)
+    .slice(-1)[0]?.metadata || null;
+
+  // Health status indicator
+  const systemHealthy = health?.keys?.some((k) => k.healthy) ?? null;
 
   return (
     <div className="app">
@@ -28,13 +41,23 @@ export default function App() {
         onLabMode={setLabMode}
         refreshKey={storedCount}
         onNewChat={newChat}
+        messages={messages}
+        engineeringMode={engineeringMode}
+        onEngineeringMode={setEngineeringMode}
+        latestFailoverEvent={latestFailoverEvent}
       />
       <main className="main">
         <header className="topbar">
-          <button className="icon-btn menu-btn" onClick={() => setDrawer(true)} aria-label="Open sidebar">☰</button>
-          <div>
-            <strong>Lyftr Resilient AI</strong>
-            <small>Reliable LLM Conversations. Built for Failure.</small>
+          <button
+            className="icon-btn menu-btn"
+            onClick={() => setDrawer(true)}
+            aria-label="Open sidebar"
+          >
+            ☰
+          </button>
+          <div className="topbar-brand">
+            <strong className="topbar-title">ResilientLLM</strong>
+            <small className="topbar-sub">Observable, fault-tolerant LLM conversations.</small>
           </div>
           <div className="topbar-actions">
             {simulate && (
@@ -42,10 +65,16 @@ export default function App() {
                 type="button"
                 className="sim-pill clickable"
                 onClick={() => setDrawer(true)}
-                title="Resilience Lab active (click to configure)"
+                title="Resilience Lab active — click to configure"
               >
-                Simulating {simulate}
+                ⚡ Simulating {simulate}
               </button>
+            )}
+            {systemHealthy !== null && (
+              <div className={`health-indicator ${systemHealthy ? "healthy" : "degraded"}`}>
+                <span className="health-dot" />
+                <span>{systemHealthy ? "Systems Healthy" : "Degraded"}</span>
+              </div>
             )}
             <button
               type="button"
@@ -57,7 +86,13 @@ export default function App() {
             </button>
           </div>
         </header>
-        <Conversation messages={messages} loading={loading} onRetry={retry} onPick={send} />
+        <Conversation
+          messages={messages}
+          loading={loading}
+          onRetry={retry}
+          onPick={send}
+          engineeringMode={engineeringMode}
+        />
         <Composer onSend={send} loading={loading} />
       </main>
     </div>

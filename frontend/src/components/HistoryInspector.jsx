@@ -22,21 +22,30 @@ export default function HistoryInspector({ sessionId, refreshKey }) {
   return (
     <div className="history">
       <div className="history-head">
-        <small>Live from SQLite · GET /sessions/…/messages</small>
+        <span className="history-badge">SQLite Session Store</span>
         <button type="button" className="link-btn" onClick={load} disabled={state.loading}>
           {state.loading ? "Loading…" : "Refresh"}
         </button>
       </div>
-      {state.error && <p className="muted">{state.error}</p>}
-      {state.messages && state.messages.length === 0 && <p className="muted">No stored messages yet.</p>}
+      <div className="history-session-meta">
+        <code>{sessionId}</code>
+        <span className="msg-count-tag">{state.messages ? `${state.messages.length} stored` : "Loading..."}</span>
+      </div>
+      {state.error && <p className="muted error-text">{state.error}</p>}
+      {state.messages && state.messages.length === 0 && (
+        <p className="muted empty-note">No stored turns in SQLite yet. Successful turns are saved atomically.</p>
+      )}
       <ol className="history-list">
         {(state.messages || []).map((m, i) => (
           <li key={i} className={`history-item ${m.role}`}>
-            <span className="history-role">{m.role}</span>
+            <div className="history-item-top">
+              <span className={`history-role-tag ${m.role}`}>{m.role === "user" ? "YOU" : "ASSISTANT"}</span>
+              <span className="history-idx">#{i + 1}</span>
+            </div>
             <span className="history-text">{m.content}</span>
             {m.metadata && (
               <span className="history-meta">
-                {m.metadata.resolution_source} · ↓{m.metadata.input_tokens} ↑{m.metadata.output_tokens}
+                {m.metadata.resolution_source} {m.metadata.latency_ms ? `• ${m.metadata.latency_ms} ms` : ""} • ↓{m.metadata.input_tokens} ↑{m.metadata.output_tokens}
               </span>
             )}
           </li>

@@ -1,5 +1,10 @@
 """Provider network calls are mocked via LiteLLM's own `mock_response`, so the real
-LiteLLM cache + completion path (token counting, cache hits) still runs. No API quota is used."""
+LiteLLM cache + completion path (token counting, cache hits) still runs. No external API calls or quota are used."""
+import os
+# Force LiteLLM into full offline mode for tests (disables remote cost map downloads and remote telemetry)
+os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
+os.environ["LITELLM_OFFLINE_MODE"] = "true"
+
 from types import SimpleNamespace
 
 import litellm
@@ -12,8 +17,9 @@ GEMINI_KEY = "test-gemini-SECRET-123"
 GROQ_KEY = "test-groq-SECRET-456"
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def provider(monkeypatch):
+    """Autouse fixture ensuring EVERY test has litellm.completion mocked with mock_response."""
     state = SimpleNamespace(calls=[], fail={}, counter=0)
     real = litellm.completion
 
@@ -28,10 +34,10 @@ def provider(monkeypatch):
         hit = False
         if getattr(litellm, "cache", None) is not None:
             try:
-                k = litellm.cache.get_cache_key(*args, **kwargs)
-                hit = litellm.cache.get_cache(k) is not None
+                hit = litellm.cache.get_cache(**kwargs) is not None
             except Exception:
                 pass
+        # 500ms mock delay for live, 0ms for cache hit so cache latency reduction test reliably passes
         delay = 0.0 if hit else 0.5
         return real(*args, mock_response=text, mock_delay=delay, **kwargs)
 
