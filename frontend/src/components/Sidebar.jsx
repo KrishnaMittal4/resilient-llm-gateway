@@ -10,32 +10,53 @@ export default function Sidebar({
   open, onClose, sessionId, messageCount, health, systemPrompt, onSystemPrompt,
   labMode, onLabMode, refreshKey, onNewChat,
   messages, engineeringMode, onEngineeringMode, latestFailoverEvent,
+  collapsed, onToggleCollapse,
 }) {
   return (
     <>
       {open && <div className="scrim" onClick={onClose} aria-hidden="true" />}
-      <aside className={`sidebar ${open ? "open" : ""}`} aria-label="Sidebar">
-        {/* Brand */}
+      <aside
+        className={`sidebar ${open ? "open" : ""} ${collapsed ? "collapsed" : ""}`}
+        aria-label="Sidebar"
+      >
+        {/* Brand Header */}
         <div className="brand">
           <span className="logo" aria-hidden="true">R</span>
-          <div>
+          <div className="brand-text">
             <strong>ResilientLLM</strong>
-            <small>Observability console</small>
+            <small>Observability Console</small>
           </div>
-          <button className="icon-btn close-btn" onClick={onClose} aria-label="Close sidebar">✕</button>
+          <button
+            type="button"
+            className="icon-btn collapse-toggle-btn"
+            onClick={onToggleCollapse}
+            title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          >
+            {collapsed ? "»" : "«"}
+          </button>
+          <button
+            type="button"
+            className="icon-btn close-btn"
+            onClick={onClose}
+            aria-label="Close sidebar"
+          >
+            ✕
+          </button>
         </div>
 
-        {/* Session */}
-        <section>
+        {/* Session Section */}
+        <section className="sidebar-section">
           <div className="section-head">
             <h3>Session</h3>
             <button
               type="button"
-              className="link-btn"
+              className="subtle-reset-btn"
               onClick={() => { onNewChat?.(); onClose?.(); }}
-              title="Start new session"
+              title="Reset to fresh session"
+              aria-label="Start new session"
             >
-              + New Chat
+              Reset
             </button>
           </div>
           <dl className="kv">
@@ -47,54 +68,56 @@ export default function Sidebar({
         </section>
 
         {/* System Health */}
-        <section>
+        <section className="sidebar-section">
           <h3>System Health</h3>
           <HealthPanel health={health} />
         </section>
 
         {/* Session Insights */}
-        <section>
+        <section className="sidebar-section">
           <h3>Session Insights</h3>
           <SessionInsights messages={messages || []} />
         </section>
 
         {/* AI Configuration */}
-        <section>
+        <section className="sidebar-section">
           <h3>AI Configuration</h3>
-          <label className="field-label" htmlFor="sys">System prompt</label>
+          <label className="field-label" htmlFor="sys">System Prompt</label>
           <textarea
             id="sys"
             data-testid="system-prompt-input"
-            rows={3}
+            rows={2}
             maxLength={4000}
             value={systemPrompt}
             onChange={(e) => onSystemPrompt(e.target.value)}
+            placeholder="System prompt participating in cache identity..."
           />
-          <small className="muted">Applies to this session and is part of the cache identity.</small>
+          <small className="muted subtle-help">
+            Applies to this session and participates in cache identity.
+          </small>
         </section>
 
         {/* Developer Tools */}
-        <section>
-          <h3>Developer Tools</h3>
-
-          {/* Engineering Mode Toggle */}
-          <div className="eng-mode-row">
-            <span className="eng-mode-label">Engineering Mode</span>
-            <button
-              type="button"
-              className={`toggle-btn ${engineeringMode ? "on" : ""}`}
-              onClick={() => onEngineeringMode?.(!engineeringMode)}
-              aria-pressed={engineeringMode}
-              title="Toggle response metadata display"
-            >
-              <span className="toggle-thumb" />
-            </button>
+        <section className="sidebar-section dev-tools-section">
+          <div className="section-head">
+            <h3>Developer Tools</h3>
+            {/* Engineering Mode Toggle */}
+            <div className="eng-mode-inline">
+              <span className="eng-mode-label">Engineering</span>
+              <button
+                type="button"
+                className={`toggle-btn ${engineeringMode ? "on" : ""}`}
+                onClick={() => onEngineeringMode?.(!engineeringMode)}
+                aria-pressed={engineeringMode}
+                title="Toggle technical metadata display"
+                aria-label="Toggle technical engineering mode"
+              >
+                <span className="toggle-thumb" />
+              </button>
+            </div>
           </div>
-          <small className="muted" style={{ display: "block", marginBottom: 12 }}>
-            Show metadata chips and observability details on responses.
-          </small>
 
-          <details open>
+          <details open className="tool-details">
             <summary>Resilience Lab</summary>
             <ResilienceLab
               mode={labMode}
@@ -102,7 +125,8 @@ export default function Sidebar({
               latestEvent={latestFailoverEvent}
             />
           </details>
-          <details>
+
+          <details className="tool-details">
             <summary>Session History</summary>
             <HistoryInspector sessionId={sessionId} refreshKey={refreshKey} />
           </details>

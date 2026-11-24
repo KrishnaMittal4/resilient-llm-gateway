@@ -5,7 +5,7 @@ export default function SessionInsights({ messages }) {
   if (totalRequests === 0) {
     return (
       <div className="insights-panel empty">
-        <p className="muted" style={{ margin: 0, fontSize: 13 }}>
+        <p className="muted" style={{ margin: 0, fontSize: 12 }}>
           No requests yet. Send a prompt to record session metrics.
         </p>
       </div>
@@ -48,43 +48,42 @@ export default function SessionInsights({ messages }) {
 
   return (
     <div className="insights-panel" aria-label="Session Insights">
-      <div className="insights-grid">
-        <div className="insight-card">
+      <div className="insights-compact-grid">
+        <div className="insight-row">
           <span className="insight-label">Requests</span>
           <strong className="insight-val">{totalRequests}</strong>
         </div>
-        <div className="insight-card">
+        <div className="insight-row">
           <span className="insight-label">Live Inferences</span>
           <strong className="insight-val live">{liveCount}</strong>
         </div>
-        <div className="insight-card">
+        <div className="insight-row">
           <span className="insight-label">Cache Hits</span>
           <strong className="insight-val cache">{cacheCount}</strong>
         </div>
-        <div className="insight-card">
+        <div className="insight-row">
           <span className="insight-label">Fallback Events</span>
           <strong className="insight-val fallback">{fallbackCount}</strong>
         </div>
-        <div className="insight-card">
-          <span className="insight-label">Input Tokens</span>
-          <strong className="insight-val">{totalInputTokens.toLocaleString()}</strong>
-        </div>
-        <div className="insight-card">
-          <span className="insight-label">Output Tokens</span>
-          <strong className="insight-val">{totalOutputTokens.toLocaleString()}</strong>
-        </div>
-        <div className="insight-card">
+        <div className="insight-row">
           <span className="insight-label">Avg Latency</span>
           <strong className="insight-val">{avgLatency} ms</strong>
         </div>
-        <div className="insight-card">
+        <div className="insight-row">
           <span className="insight-label">Cache Hit Rate</span>
           <strong className="insight-val">{cacheHitRate}%</strong>
+        </div>
+        <div className="insight-row tokens-row">
+          <span className="insight-label">Session Tokens</span>
+          <span className="insight-tokens">
+            ↓ <strong>{totalInputTokens.toLocaleString()}</strong> &nbsp;
+            ↑ <strong>{totalOutputTokens.toLocaleString()}</strong>
+          </span>
         </div>
       </div>
 
       <div className="provider-routing-sub">
-        <span className="field-label" style={{ marginBottom: 6 }}>Provider Routing (This Session)</span>
+        <span className="sub-title">Provider Distribution</span>
         <div className="routing-bars">
           <div className="routing-row">
             <span className="routing-name">Gemini (key_1)</span>
@@ -100,8 +99,8 @@ export default function SessionInsights({ messages }) {
           </div>
         </div>
       </div>
-      <small className="muted" style={{ display: "block", marginTop: 8 }}>
-        Derived analytics for current page session. Per-response token usage remains isolated per request.
+      <small className="muted insight-footnote">
+        Session-level derived analytics. Individual message tokens remain per request.
       </small>
     </div>
   );

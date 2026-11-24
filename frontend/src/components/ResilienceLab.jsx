@@ -11,10 +11,10 @@ export default function ResilienceLab({ mode, onChange, latestEvent }) {
   return (
     <div className="lab" aria-label="Resilience Lab">
       <div className="lab-badge-row">
-        <span className="lab-sub-badge">Demo Failure Simulation</span>
+        <span className="lab-sub-badge">DEMO FAILURE SIMULATION</span>
       </div>
       <p className="lab-desc">
-        Simulation affects the request through the assignment-required <code>X-Simulate-Failure</code> header. Real provider keys are skipped on demand without exhausting quota.
+        Uses the assignment-required <code>X-Simulate-Failure</code> header. Real provider keys are skipped on demand without exhausting quota.
       </p>
 
       <div className="lab-modes" role="radiogroup" aria-label="Failure Scenario">
@@ -50,12 +50,12 @@ export default function ResilienceLab({ mode, onChange, latestEvent }) {
         <div className="failover-event-summary" aria-label="Latest failover event">
           <div className="event-head">
             <span className="event-tag">FAILOVER EVENT</span>
-            <span className="event-attempts">Attempts: {latestEvent.fallback_attempts}</span>
+            <span className="event-attempts">Fallback Attempts: {latestEvent.fallback_attempts}</span>
           </div>
           <div className="event-flow">
-            <span className="event-node fail">Gemini / key_1 (429/5xx)</span>
-            <span className="event-arrow">↓ Automatic Fallback</span>
-            <span className="event-node ok">Groq / key_2 ({latestEvent.latency_ms} ms)</span>
+            <span className="event-node fail">Gemini / key_1 (429/5xx FAILED)</span>
+            <span className="event-arrow">↓ Automatic Failover ↓</span>
+            <span className="event-node ok">Groq / key_2 ({latestEvent.latency_ms} ms SUCCESS)</span>
           </div>
         </div>
       )}

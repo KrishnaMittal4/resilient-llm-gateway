@@ -11,16 +11,24 @@ const SUGGESTIONS = [
 export function EmptyState({ onPick }) {
   return (
     <div className="empty" aria-label="Welcome screen">
-      <div className="empty-badge">Production LLM Gateway</div>
+      <div className="empty-badge">PRODUCTION LLM GATEWAY</div>
       <h1>ResilientLLM</h1>
       <p className="tagline">Observable, fault-tolerant LLM conversations.</p>
       <p className="empty-copy">
-        Reliable multi-turn conversations with automatic key failover (Gemini ➔ Groq), LiteLLM response caching, SQLite persistence, and per-request observability.
+        Reliable multi-turn conversations with automatic key failover (Gemini → Groq), LiteLLM response caching, SQLite persistence, and per-request observability.
       </p>
-      <p className="tech-stack-line">Built with LiteLLM • Gemini • Groq • SQLite</p>
-      <div className="suggestions">
+      <p className="tech-stack-line">
+        <strong>React • FastAPI • LiteLLM • Gemini → Groq • SQLite</strong>
+      </p>
+      <div className="suggestions" role="group" aria-label="Suggested prompts">
         {SUGGESTIONS.map((s) => (
-          <button key={s} type="button" className="suggestion" onClick={() => onPick(s)}>
+          <button
+            key={s}
+            type="button"
+            className="suggestion"
+            onClick={() => onPick(s)}
+            aria-label={`Prompt: ${s}`}
+          >
             <span>{s}</span>
             <span className="suggestion-arrow" aria-hidden="true">→</span>
           </button>
@@ -46,7 +54,7 @@ export default function Conversation({ messages, loading, onRetry, onPick, engin
 
   if (messages.length === 0) {
     return (
-      <div className="scroller">
+      <div className="scroller empty-scroller">
         <EmptyState onPick={onPick} />
       </div>
     );
@@ -63,10 +71,10 @@ export default function Conversation({ messages, loading, onRetry, onPick, engin
           )
         )}
         {loading && (
-          <div className="msg assistant loading" aria-label="Waiting for AI response">
-            <div className="loading-state-card">
+          <div className="msg assistant loading" aria-label="Waiting for AI provider">
+            <div className="loading-state-card" role="status">
               <span className="spinner small" aria-hidden="true" />
-              <span className="loading-text">Waiting for AI response...</span>
+              <span className="loading-text">Waiting for AI provider...</span>
             </div>
           </div>
         )}

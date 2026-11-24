@@ -10,6 +10,7 @@ export default function App() {
   const [systemPrompt, setSystemPrompt] = useState(DEFAULT_PROMPT);
   const [labMode, setLabMode] = useState("normal");
   const [drawer, setDrawer] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [engineeringMode, setEngineeringMode] = useState(true);
 
   const health = useHealth();
@@ -28,7 +29,7 @@ export default function App() {
   const systemHealthy = health?.keys?.some((k) => k.healthy) ?? null;
 
   return (
-    <div className="app">
+    <div className={`app ${sidebarCollapsed ? "sidebar-collapsed" : ""}`}>
       <Sidebar
         open={drawer}
         onClose={() => setDrawer(false)}
@@ -45,33 +46,50 @@ export default function App() {
         engineeringMode={engineeringMode}
         onEngineeringMode={setEngineeringMode}
         latestFailoverEvent={latestFailoverEvent}
+        collapsed={sidebarCollapsed}
+        onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
       />
       <main className="main">
         <header className="topbar">
-          <button
-            className="icon-btn menu-btn"
-            onClick={() => setDrawer(true)}
-            aria-label="Open sidebar"
-          >
-            ☰
-          </button>
-          <div className="topbar-brand">
-            <strong className="topbar-title">ResilientLLM</strong>
-            <small className="topbar-sub">Observable, fault-tolerant LLM conversations.</small>
+          <div className="topbar-left">
+            <button
+              className="icon-btn menu-btn"
+              onClick={() => setDrawer(true)}
+              aria-label="Open sidebar drawer"
+              title="Open sidebar"
+            >
+              ☰
+            </button>
+            {sidebarCollapsed && (
+              <button
+                type="button"
+                className="icon-btn uncollapse-btn"
+                onClick={() => setSidebarCollapsed(false)}
+                title="Expand sidebar"
+                aria-label="Expand sidebar"
+              >
+                »
+              </button>
+            )}
+            <div className="topbar-brand">
+              <strong className="topbar-title">ResilientLLM</strong>
+              <small className="topbar-sub">Observable, fault-tolerant LLM conversations.</small>
+            </div>
           </div>
+
           <div className="topbar-actions">
             {simulate && (
               <button
                 type="button"
                 className="sim-pill clickable"
-                onClick={() => setDrawer(true)}
-                title="Resilience Lab active — click to configure"
+                onClick={() => { setSidebarCollapsed(false); setDrawer(true); }}
+                title="Resilience Lab active — click to configure simulation"
               >
                 ⚡ Simulating {simulate}
               </button>
             )}
             {systemHealthy !== null && (
-              <div className={`health-indicator ${systemHealthy ? "healthy" : "degraded"}`}>
+              <div className={`health-indicator ${systemHealthy ? "healthy" : "degraded"}`} title="Backend & database status">
                 <span className="health-dot" />
                 <span>{systemHealthy ? "Systems Healthy" : "Degraded"}</span>
               </div>
@@ -80,12 +98,13 @@ export default function App() {
               type="button"
               className="new-chat-btn"
               onClick={newChat}
-              title="Start a fresh conversation"
+              title="Start a fresh conversation session"
             >
               + New Chat
             </button>
           </div>
         </header>
+
         <Conversation
           messages={messages}
           loading={loading}
