@@ -102,3 +102,11 @@ export function IconArrowRight({ size = 12, className = "" }) {
     </svg>
   );
 }
+
+export function IconDownload({ size = 13, className = "" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M8 2.5v8M4.5 7.5L8 11l3.5-3.5M2.5 13.5h11" />
+    </svg>
+  );
+}

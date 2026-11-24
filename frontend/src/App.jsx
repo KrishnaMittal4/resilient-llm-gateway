@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import Composer from "./components/Composer";
 import Conversation from "./components/Conversation";
-import { IconBolt, IconExpand, IconMenu } from "./components/Icons";
+import { IconBolt, IconDownload, IconExpand, IconMenu } from "./components/Icons";
 import { LAB_MODES } from "./components/ResilienceLab";
 import Sidebar, { DEFAULT_PROMPT } from "./components/Sidebar";
 import { useChat } from "./hooks/useChat";
@@ -28,6 +28,38 @@ export default function App() {
 
   // Health status indicator
   const systemHealthy = health?.keys?.some((k) => k.healthy) ?? null;
+
+  const exportTrace = useCallback(() => {
+    if (messages.length === 0) return;
+    const trace = {
+      app: "ResilientLLM",
+      exported_at: new Date().toISOString(),
+      session_id: sessionId,
+      system_prompt: systemPrompt,
+      session_summary: {
+        total_messages: messages.length,
+        assistant_replies: messages.filter((m) => m.role === "assistant").length,
+        cache_hits: messages.filter((m) => m.role === "assistant" && m.metadata?.resolution_source === "LLM_CACHE").length,
+        live_inferences: messages.filter((m) => m.role === "assistant" && m.metadata?.resolution_source === "LIVE_INFERENCE").length,
+        failover_events: messages.filter((m) => m.role === "assistant" && m.metadata?.fallback_attempts > 0).length,
+      },
+      messages: messages.map((m) => ({
+        id: m.id,
+        role: m.role,
+        content: m.content,
+        status: m.status,
+        metadata: m.metadata || null,
+        simulation: m.simulate || null,
+      })),
+    };
+    const blob = new Blob([JSON.stringify(trace, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `resilient-llm-trace-${sessionId}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }, [sessionId, systemPrompt, messages]);
 
   return (
     <div className={`app ${sidebarCollapsed ? "sidebar-collapsed" : ""}`}>
@@ -94,6 +126,18 @@ export default function App() {
                 <span className="health-dot" />
                 <span>{systemHealthy ? "Systems Healthy" : "Degraded"}</span>
               </div>
+            )}
+            {messages.length > 0 && (
+              <button
+                type="button"
+                className="export-btn"
+                onClick={exportTrace}
+                title="Download complete session telemetry trace as JSON"
+                aria-label="Download session JSON trace"
+              >
+                <IconDownload size={13} />
+                <span>Export Trace</span>
+              </button>
             )}
             <button
               type="button"
