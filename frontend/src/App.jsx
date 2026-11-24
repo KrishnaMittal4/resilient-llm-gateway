@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Composer from "./components/Composer";
 import Conversation from "./components/Conversation";
+import { IconBolt, IconExpand, IconMenu } from "./components/Icons";
 import { LAB_MODES } from "./components/ResilienceLab";
 import Sidebar, { DEFAULT_PROMPT } from "./components/Sidebar";
 import { useChat } from "./hooks/useChat";
@@ -58,7 +59,7 @@ export default function App() {
               aria-label="Open sidebar drawer"
               title="Open sidebar"
             >
-              ☰
+              <IconMenu size={16} />
             </button>
             {sidebarCollapsed && (
               <button
@@ -68,7 +69,7 @@ export default function App() {
                 title="Expand sidebar"
                 aria-label="Expand sidebar"
               >
-                »
+                <IconExpand size={14} />
               </button>
             )}
             <div className="topbar-brand">
@@ -85,7 +86,7 @@ export default function App() {
                 onClick={() => { setSidebarCollapsed(false); setDrawer(true); }}
                 title="Resilience Lab active — click to configure simulation"
               >
-                ⚡ Simulating {simulate}
+                <IconBolt size={12} className="sim-pill-icon" /> Simulating {simulate}
               </button>
             )}
             {systemHealthy !== null && (

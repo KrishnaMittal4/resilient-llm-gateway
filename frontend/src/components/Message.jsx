@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { IconBolt, IconCheck, IconCopy, IconThumbDown, IconThumbUp } from "./Icons";
 import MarkdownRenderer from "./MarkdownRenderer";
 
 const KEY_PROVIDER = { key_1: "Gemini", key_2: "Groq" };
@@ -19,7 +20,9 @@ function ProviderRouteVisualization({ meta }) {
     return (
       <div className="route-box cache" aria-label="Provider routing: Cache Hit">
         <div className="route-step">
-          <span className="route-node cache">⚡ LLM_CACHE</span>
+          <span className="route-node cache">
+            <IconBolt size={11} className="inline-bolt" /> LLM_CACHE
+          </span>
           <span className="route-arrow">➔</span>
           <span className="route-node ok">Served from in-memory cache (0 ms network, key: null)</span>
         </div>
@@ -67,7 +70,9 @@ function CacheComparison({ meta, compare }) {
   if (!compare) {
     return (
       <div className="cache-banner" aria-label="Cache hit notice">
-        <span className="cache-tag">⚡ LLM_CACHE</span>
+        <span className="cache-tag">
+          <IconBolt size={11} className="inline-bolt" /> LLM_CACHE
+        </span>
         <span className="cache-msg">Served from cache</span>
       </div>
     );
@@ -76,7 +81,9 @@ function CacheComparison({ meta, compare }) {
   const reduction = Math.max(0, Math.round((1 - meta.latency_ms / compare.liveMs) * 100));
   return (
     <div className="cache-banner with-compare" aria-label="Cache performance comparison">
-      <span className="cache-tag">⚡ LLM_CACHE</span>
+      <span className="cache-tag">
+        <IconBolt size={11} className="inline-bolt" /> LLM_CACHE
+      </span>
       <span className="cache-metric">Live: {compare.liveMs} ms ➔ Cached: {meta.latency_ms} ms</span>
       {reduction > 0 && <strong className="reduction-badge">{reduction}% latency reduction</strong>}
     </div>
@@ -159,7 +166,7 @@ export function AssistantMessage({ msg, engineeringMode = true }) {
             aria-label="Copy full answer"
             title="Copy answer to clipboard"
           >
-            {copied ? "✓ Copied" : "Copy"}
+            {copied ? <><IconCheck size={12} /> Copied</> : <><IconCopy size={12} /> Copy</>}
           </button>
           <button
             type="button"
@@ -168,7 +175,7 @@ export function AssistantMessage({ msg, engineeringMode = true }) {
             aria-label="Helpful"
             title="Helpful response"
           >
-            👍
+            <IconThumbUp size={13} />
           </button>
           <button
             type="button"
@@ -177,7 +184,7 @@ export function AssistantMessage({ msg, engineeringMode = true }) {
             aria-label="Not helpful"
             title="Not helpful response"
           >
-            👎
+            <IconThumbDown size={13} />
           </button>
         </div>
 

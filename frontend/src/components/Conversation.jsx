@@ -1,36 +1,52 @@
 import { useEffect, useRef } from "react";
+import { IconArrowRight, IconSparkles } from "./Icons";
 import { AssistantMessage, UserMessage } from "./Message";
 
 const SUGGESTIONS = [
-  "Explain Docker simply",
-  "What is an API gateway?",
-  "Compare REST vs GraphQL",
-  "Explain caching & failover architecture",
+  { tag: "Architecture", text: "Explain caching & failover architecture" },
+  { tag: "Systems", text: "What is an API gateway?" },
+  { tag: "DevOps", text: "Explain Docker simply" },
+  { tag: "API Design", text: "Compare REST vs GraphQL" },
 ];
 
 export function EmptyState({ onPick }) {
   return (
     <div className="empty" aria-label="Welcome screen">
-      <div className="empty-badge">PRODUCTION LLM GATEWAY</div>
+      <div className="empty-badge">
+        <IconSparkles size={11} className="badge-sparkle" /> PRODUCTION LLM GATEWAY
+      </div>
       <h1>ResilientLLM</h1>
       <p className="tagline">Observable, fault-tolerant LLM conversations.</p>
       <p className="empty-copy">
         Reliable multi-turn conversations with automatic key failover (Gemini → Groq), LiteLLM response caching, SQLite persistence, and per-request observability.
       </p>
-      <p className="tech-stack-line">
-        <strong>React • FastAPI • LiteLLM • Gemini → Groq • SQLite</strong>
-      </p>
+      <div className="tech-stack-pills">
+        <span className="tech-pill">React</span>
+        <span className="tech-pill-dot">•</span>
+        <span className="tech-pill">FastAPI</span>
+        <span className="tech-pill-dot">•</span>
+        <span className="tech-pill">LiteLLM</span>
+        <span className="tech-pill-dot">•</span>
+        <span className="tech-pill">Gemini → Groq</span>
+        <span className="tech-pill-dot">•</span>
+        <span className="tech-pill">SQLite</span>
+      </div>
       <div className="suggestions" role="group" aria-label="Suggested prompts">
         {SUGGESTIONS.map((s) => (
           <button
-            key={s}
+            key={s.text}
             type="button"
             className="suggestion"
-            onClick={() => onPick(s)}
-            aria-label={`Prompt: ${s}`}
+            onClick={() => onPick(s.text)}
+            aria-label={`Prompt: ${s.text}`}
           >
-            <span>{s}</span>
-            <span className="suggestion-arrow" aria-hidden="true">→</span>
+            <div className="suggestion-content">
+              <span className="suggestion-category">{s.tag}</span>
+              <span className="suggestion-text">{s.text}</span>
+            </div>
+            <span className="suggestion-arrow" aria-hidden="true">
+              <IconArrowRight size={13} />
+            </span>
           </button>
         ))}
       </div>

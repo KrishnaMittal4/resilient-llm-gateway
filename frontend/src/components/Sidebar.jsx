@@ -1,5 +1,6 @@
 import HealthPanel from "./HealthPanel";
 import HistoryInspector from "./HistoryInspector";
+import { IconClose, IconCollapse, IconExpand } from "./Icons";
 import ResilienceLab from "./ResilienceLab";
 import SessionInsights from "./SessionInsights";
 
@@ -33,7 +34,7 @@ export default function Sidebar({
             title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
             aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
-            {collapsed ? "»" : "«"}
+            {collapsed ? <IconExpand size={14} /> : <IconCollapse size={14} />}
           </button>
           <button
             type="button"
@@ -41,7 +42,7 @@ export default function Sidebar({
             onClick={onClose}
             aria-label="Close sidebar"
           >
-            ✕
+            <IconClose size={13} />
           </button>
         </div>
 

@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { IconSend } from "./Icons";
 
 export default function Composer({ onSend, loading }) {
   const [value, setValue] = useState("");
@@ -41,9 +42,21 @@ export default function Composer({ onSend, loading }) {
           }
         }}
       />
-      <button data-testid="send-button" className="send" onClick={submit} disabled={!canSend} aria-label="Send message">
-        {loading ? <span className="spinner" aria-hidden="true" /> : "Send"}
-      </button>
+      <div className="composer-actions">
+        <span className="composer-kbd" title="Press Enter to send">
+          <kbd>↵</kbd>
+        </span>
+        <button
+          data-testid="send-button"
+          className="send"
+          onClick={submit}
+          disabled={!canSend}
+          aria-label="Send message"
+          title="Send message (Enter)"
+        >
+          {loading ? <span className="spinner" aria-hidden="true" /> : <IconSend size={15} />}
+        </button>
+      </div>
     </div>
   );
 }
