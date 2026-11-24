@@ -1,0 +1,28 @@
+# Render Blueprint for the BACKEND. Persistent disks require a paid instance type.
+services:
+  - type: web
+    name: lyftr-resilient-ai-backend
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: starter
+    healthCheckPath: /health
+    disk:
+      name: sqlite-data
+      mountPath: /data          # SQLite lives on this persistent disk
+      sizeGB: 1
+    envVars:
+      - key: DATABASE_URL
+        value: sqlite:////data/app.db
+      - key: ENABLE_FAILURE_SIMULATION
+        value: "true"
+      - key: ALLOWED_ORIGINS
+        sync: false              # set to your Vercel URL
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini/gemini-2.5-flash
+      - key: GROQ_MODEL
+        value: groq/llama-3.3-70b-versatile
