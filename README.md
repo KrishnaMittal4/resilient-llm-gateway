@@ -1,4 +1,4 @@
-# Lyftr Resilient AI
+# Resilient AI
 
 **Reliable LLM Conversations. Built for Failure.**
 
